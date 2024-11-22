@@ -1,7 +1,12 @@
 {
-  "name": "@ken-1/source",
+  "name": "@monorepo-fullstack/source",
   "version": "0.0.0",
   "license": "MIT",
+  "author": {
+    "name": "Rio Chandra",
+    "email": "me.riochndr@gmail.com",
+    "url": "https://riochndr.com"
+  },
   "scripts": {},
   "private": true,
   "dependencies": {
