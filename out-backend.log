@@ -1,0 +1,490 @@
+
+ NX   Running target serve for project backend and 1 task it depends on:
+
+
+
+> nx run backend:build
+
+> webpack-cli build --node-env=production
+
+Entrypoint main =
+chunk (runtime: main) (main) [entry]
+
+ERROR in main
+Module not found: Error: Can't resolve '/Users/riochandra/dev/project/ken-1/apps/backend/src/main.ts' in '/Users/riochandra/dev/project/ken-1/apps/backend'
+
+ERROR in ./src/src/api/donation/donation.service.ts:10:20
+TS2339: Property 'fundsHistory' does not exist on type 'PrismaService'.
+     8 |
+     9 |   async getListDonation(id: string, page: number, limit: number) {
+  > 10 |     return this.db.fundsHistory
+       |                    ^^^^^^^^^^^^
+    11 |       .findMany({
+    12 |         where: {
+    13 |           funds: {
+
+ERROR in ./src/src/api/donation/donation.service.ts:31:20
+TS2339: Property 'funds' does not exist on type 'PrismaService'.
+    29 |
+    30 |   getDetailDonation(id: string) {
+  > 31 |     return this.db.funds.findUnique({ where: { id } }).then((res) => {
+       |                    ^^^^^
+    32 |       if (!res) {
+    33 |         throw new BadRequestException('Fund not found');
+    34 |       }
+
+ERROR in ./src/src/api/donation/funds-handlers.service.ts:2:25
+TS2307: Cannot find module '@nestjs/event-emitter' or its corresponding type declarations.
+    1 | import { Injectable, Logger } from '@nestjs/common';
+  > 2 | import { OnEvent } from '@nestjs/event-emitter';
+      |                         ^^^^^^^^^^^^^^^^^^^^^^^
+    3 | import { PrismaService } from '../../../src/provider/prisma/prisma.service';
+    4 | import {
+    5 |   FundPaymentOnetimeEvent,
+
+ERROR in ./src/src/api/donation/funds-handlers.service.ts:8:24
+TS2307: Cannot find module '@prisma/client' or its corresponding type declarations.
+     6 |   FundPaymentRecurringEvent,
+     7 | } from '../stripe/webhook-handler/funds.event';
+  >  8 | import { Prisma } from '@prisma/client';
+       |                        ^^^^^^^^^^^^^^^^
+     9 |
+    10 | @Injectable()
+    11 | export class FundsHandlerService {
+
+ERROR in ./src/src/api/donation/funds-handlers.service.ts:88:20
+TS2339: Property 'fundsHistory' does not exist on type 'PrismaService'.
+    86 |
+    87 |   async saveHistoryPayment(data: Prisma.FundsHistoryCreateInput) {
+  > 88 |     return this.db.fundsHistory.create({
+       |                    ^^^^^^^^^^^^
+    89 |       data,
+    90 |     });
+    91 |   }
+
+ERROR in ./src/src/api/donation/funds-handlers.service.ts:94:20
+TS2339: Property 'fundsRecurring' does not exist on type 'PrismaService'.
+    92 |
+    93 |   async saveRecurringPayment(data: Prisma.FundsRecurringCreateInput) {
+  > 94 |     return this.db.fundsRecurring.upsert({
+       |                    ^^^^^^^^^^^^^^
+    95 |       create: data,
+    96 |       update: data,
+    97 |       where: {
+
+ERROR in ./src/src/api/donation/funds-handlers.service.ts:104:32
+TS2339: Property 'funds' does not exist on type 'PrismaService'.
+    102 |
+    103 |   async calculateAndStoreTotalFund(fundId: string, amount: number) {
+  > 104 |     const fund = await this.db.funds.findUnique({ where: { id: fundId } });
+        |                                ^^^^^
+    105 |     if (fund.targetGoal) {
+    106 |       await this.db.funds.update({
+    107 |         where: { id: fundId },
+
+ERROR in ./src/src/api/donation/funds-handlers.service.ts:106:21
+TS2339: Property 'funds' does not exist on type 'PrismaService'.
+    104 |     const fund = await this.db.funds.findUnique({ where: { id: fundId } });
+    105 |     if (fund.targetGoal) {
+  > 106 |       await this.db.funds.update({
+        |                     ^^^^^
+    107 |         where: { id: fundId },
+    108 |         data: { currentGoal: { increment: amount } },
+    109 |       });
+
+ERROR in ./src/src/api/donation/funds-handlers.service.ts:112:21
+TS2339: Property 'funds' does not exist on type 'PrismaService'.
+    110 |     }
+    111 |     if (fund.targetMonthly) {
+  > 112 |       await this.db.funds.update({
+        |                     ^^^^^
+    113 |         where: { id: fundId },
+    114 |         data: { currentMonthly: { increment: amount } },
+    115 |       });
+
+ERROR in ./src/src/api/donation/funds-handlers.service.ts:118:21
+TS2339: Property 'funds' does not exist on type 'PrismaService'.
+    116 |     }
+    117 |     if (fund.targetYearly) {
+  > 118 |       await this.db.funds.update({
+        |                     ^^^^^
+    119 |         where: { id: fundId },
+    120 |         data: { currentYearly: { increment: amount } },
+    121 |       });
+
+ERROR in ./src/src/api/health/health.service.ts:12:33
+TS2339: Property '$queryRaw' does not exist on type 'PrismaService'.
+    10 |   async testDbQuery() {
+    11 |     try {
+  > 12 |       const res = await this.db.$queryRaw`SELECT 1;`;
+       |                                 ^^^^^^^^^
+    13 |       return res ? 'ok' : 'error';
+    14 |     } catch (e) {
+    15 |       return 'error';
+
+ERROR in ./src/src/api/stripe/funds-payment/funds-payment.service.ts:1:31
+TS2307: Cannot find module '@nestjs/cache-manager' or its corresponding type declarations.
+  > 1 | import { CACHE_MANAGER } from '@nestjs/cache-manager';
+      |                               ^^^^^^^^^^^^^^^^^^^^^^^
+    2 | import {
+    3 |   BadRequestException,
+    4 |   Inject,
+
+ERROR in ./src/src/api/stripe/funds-payment/funds-payment.service.ts:8:23
+TS2307: Cannot find module 'cache-manager' or its corresponding type declarations.
+     6 |   Logger,
+     7 | } from '@nestjs/common';
+  >  8 | import { Cache } from 'cache-manager';
+       |                       ^^^^^^^^^^^^^^^
+     9 | import Stripe from 'stripe';
+    10 | import { ClientStripe } from '../stripe';
+    11 | import { FundsPaymentCreateDto } from './funds-payment.dto';
+
+ERROR in ./src/src/api/stripe/funds-payment/funds-payment.service.ts:9:20
+TS2307: Cannot find module 'stripe' or its corresponding type declarations.
+     7 | } from '@nestjs/common';
+     8 | import { Cache } from 'cache-manager';
+  >  9 | import Stripe from 'stripe';
+       |                    ^^^^^^^^
+    10 | import { ClientStripe } from '../stripe';
+    11 | import { FundsPaymentCreateDto } from './funds-payment.dto';
+    12 | import { PrismaService } from '../../../../src/provider/prisma/prisma.service';
+
+ERROR in ./src/src/api/stripe/funds-payment/funds-payment.service.ts:13:31
+TS2307: Cannot find module '@nestjs/config' or its corresponding type declarations.
+    11 | import { FundsPaymentCreateDto } from './funds-payment.dto';
+    12 | import { PrismaService } from '../../../../src/provider/prisma/prisma.service';
+  > 13 | import { ConfigService } from '@nestjs/config';
+       |                               ^^^^^^^^^^^^^^^^
+    14 |
+    15 | @Injectable()
+    16 | export class StripeFundsPaymentService {
+
+ERROR in ./src/src/api/stripe/funds-payment/funds-payment.service.ts:28:36
+TS2339: Property 'funds' does not exist on type 'PrismaService'.
+    26 |
+    27 |   private async getFund(fundsId: string) {
+  > 28 |     const fundData = await this.db.funds.findUnique({
+       |                                    ^^^^^
+    29 |       where: {
+    30 |         id: fundsId,
+    31 |       },
+
+ERROR in ./src/src/api/stripe/funds-payment/funds-payment.service.ts:98:19
+TS2339: Property 'funds' does not exist on type 'PrismaService'.
+     96 |       });
+     97 |     await this.cacheManager.set(cacheKey, product, 1000 * 60 * 60);
+  >  98 |     await this.db.funds.update({
+        |                   ^^^^^
+     99 |       where: {
+    100 |         id: fundData.id,
+    101 |       },
+
+ERROR in ./src/src/api/stripe/stripe.ts:1:43
+TS2307: Cannot find module 'stripe' or its corresponding type declarations.
+  > 1 | import Stripe, { default as stripe } from 'stripe';
+      |                                           ^^^^^^^^
+    2 |
+    3 | export function ClientStripe(secretKey: string, config?: Stripe.StripeConfig) {
+    4 |   return new stripe(secretKey, config);
+
+ERROR in ./src/src/api/stripe/webhook-handler/funds.event.ts:1:20
+TS2307: Cannot find module 'stripe' or its corresponding type declarations.
+  > 1 | import Stripe from 'stripe';
+      |                    ^^^^^^^^
+    2 |
+    3 | class EventBase<T> {
+    4 |   stripeEvent: T;
+
+ERROR in ./src/src/api/stripe/webhook-handler/webhook-handler.service.ts:2:31
+TS2307: Cannot find module '@nestjs/config' or its corresponding type declarations.
+    1 | import { Injectable, Logger } from '@nestjs/common';
+  > 2 | import { ConfigService } from '@nestjs/config';
+      |                               ^^^^^^^^^^^^^^^^
+    3 | import { EventEmitter2 } from '@nestjs/event-emitter';
+    4 | import { plainToInstance } from 'class-transformer';
+    5 | import { DeepGet } from '../../../helper/utils';
+
+ERROR in ./src/src/api/stripe/webhook-handler/webhook-handler.service.ts:3:31
+TS2307: Cannot find module '@nestjs/event-emitter' or its corresponding type declarations.
+    1 | import { Injectable, Logger } from '@nestjs/common';
+    2 | import { ConfigService } from '@nestjs/config';
+  > 3 | import { EventEmitter2 } from '@nestjs/event-emitter';
+      |                               ^^^^^^^^^^^^^^^^^^^^^^^
+    4 | import { plainToInstance } from 'class-transformer';
+    5 | import { DeepGet } from '../../../helper/utils';
+    6 | import Stripe from 'stripe';
+
+ERROR in ./src/src/api/stripe/webhook-handler/webhook-handler.service.ts:4:33
+TS2307: Cannot find module 'class-transformer' or its corresponding type declarations.
+    2 | import { ConfigService } from '@nestjs/config';
+    3 | import { EventEmitter2 } from '@nestjs/event-emitter';
+  > 4 | import { plainToInstance } from 'class-transformer';
+      |                                 ^^^^^^^^^^^^^^^^^^^
+    5 | import { DeepGet } from '../../../helper/utils';
+    6 | import Stripe from 'stripe';
+    7 | import { ClientStripe } from '../stripe';
+
+ERROR in ./src/src/api/stripe/webhook-handler/webhook-handler.service.ts:6:20
+TS2307: Cannot find module 'stripe' or its corresponding type declarations.
+    4 | import { plainToInstance } from 'class-transformer';
+    5 | import { DeepGet } from '../../../helper/utils';
+  > 6 | import Stripe from 'stripe';
+      |                    ^^^^^^^^
+    7 | import { ClientStripe } from '../stripe';
+    8 | import {
+    9 |   FundPaymentOnetimeEvent,
+
+ERROR in ./src/src/app.module.ts:2:30
+TS2307: Cannot find module '@nestjs/config' or its corresponding type declarations.
+    1 | import { Module } from '@nestjs/common';
+  > 2 | import { ConfigModule } from '@nestjs/config';
+      |                              ^^^^^^^^^^^^^^^^
+    3 | import { ApiModule } from './api/api.module';
+    4 | import * as Joi from 'joi';
+    5 | import { LoggerModule } from 'nestjs-pino';
+
+ERROR in ./src/src/app.module.ts:4:22
+TS2307: Cannot find module 'joi' or its corresponding type declarations.
+    2 | import { ConfigModule } from '@nestjs/config';
+    3 | import { ApiModule } from './api/api.module';
+  > 4 | import * as Joi from 'joi';
+      |                      ^^^^^
+    5 | import { LoggerModule } from 'nestjs-pino';
+    6 | import { PrismaModule } from './provider/prisma/prisma.module';
+    7 | import { EventEmitterModule } from '@nestjs/event-emitter';
+
+ERROR in ./src/src/app.module.ts:5:30
+TS2307: Cannot find module 'nestjs-pino' or its corresponding type declarations.
+    3 | import { ApiModule } from './api/api.module';
+    4 | import * as Joi from 'joi';
+  > 5 | import { LoggerModule } from 'nestjs-pino';
+      |                              ^^^^^^^^^^^^^
+    6 | import { PrismaModule } from './provider/prisma/prisma.module';
+    7 | import { EventEmitterModule } from '@nestjs/event-emitter';
+    8 | import { CacheModule } from '@nestjs/cache-manager';
+
+ERROR in ./src/src/app.module.ts:7:36
+TS2307: Cannot find module '@nestjs/event-emitter' or its corresponding type declarations.
+     5 | import { LoggerModule } from 'nestjs-pino';
+     6 | import { PrismaModule } from './provider/prisma/prisma.module';
+  >  7 | import { EventEmitterModule } from '@nestjs/event-emitter';
+       |                                    ^^^^^^^^^^^^^^^^^^^^^^^
+     8 | import { CacheModule } from '@nestjs/cache-manager';
+     9 |
+    10 | @Module({
+
+ERROR in ./src/src/app.module.ts:8:29
+TS2307: Cannot find module '@nestjs/cache-manager' or its corresponding type declarations.
+     6 | import { PrismaModule } from './provider/prisma/prisma.module';
+     7 | import { EventEmitterModule } from '@nestjs/event-emitter';
+  >  8 | import { CacheModule } from '@nestjs/cache-manager';
+       |                             ^^^^^^^^^^^^^^^^^^^^^^^
+     9 |
+    10 | @Module({
+    11 |   imports: [
+
+ERROR in ./src/src/auth/auth.controller.ts:2:27
+TS2307: Cannot find module '@nestjs/passport' or its corresponding type declarations.
+    1 | import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+  > 2 | import { AuthGuard } from '@nestjs/passport';
+      |                           ^^^^^^^^^^^^^^^^^^
+    3 | import { AuthService } from './auth.service';
+    4 |
+    5 | @Controller('auth')
+
+ERROR in ./src/src/auth/auth.module.ts:6:27
+TS2307: Cannot find module '@nestjs/jwt' or its corresponding type declarations.
+    4 | import { UserService } from './user/user.service';
+    5 | import { LocalStrategy } from './strategy/local.strategy';
+  > 6 | import { JwtModule } from '@nestjs/jwt';
+      |                           ^^^^^^^^^^^^^
+    7 | import { JwtStrategy } from './strategy/jwt.strategy';
+    8 | import { GoogleOauthStrategy } from './strategy/google-oauth.strategy';
+    9 |
+
+ERROR in ./src/src/auth/auth.service.ts:2:22
+TS2307: Cannot find module '@prisma/client' or its corresponding type declarations.
+    1 | import { BadRequestException, Inject, Injectable, Logger, NotImplementedException, UnauthorizedException } from '@nestjs/common';
+  > 2 | import { User } from '@prisma/client';
+      |                      ^^^^^^^^^^^^^^^^
+    3 | import { UserService } from './user/user.service';
+    4 | import * as bcrypt from 'bcrypt';
+    5 | import { JwtService } from '@nestjs/jwt';
+
+ERROR in ./src/src/auth/auth.service.ts:5:28
+TS2307: Cannot find module '@nestjs/jwt' or its corresponding type declarations.
+    3 | import { UserService } from './user/user.service';
+    4 | import * as bcrypt from 'bcrypt';
+  > 5 | import { JwtService } from '@nestjs/jwt';
+      |                            ^^^^^^^^^^^^^
+    6 | import { CACHE_MANAGER } from '@nestjs/cache-manager';
+    7 | import { v4 as uuidv4 } from 'uuid';
+    8 | import { Cache } from 'cache-manager';
+
+ERROR in ./src/src/auth/auth.service.ts:6:31
+TS2307: Cannot find module '@nestjs/cache-manager' or its corresponding type declarations.
+    4 | import * as bcrypt from 'bcrypt';
+    5 | import { JwtService } from '@nestjs/jwt';
+  > 6 | import { CACHE_MANAGER } from '@nestjs/cache-manager';
+      |                               ^^^^^^^^^^^^^^^^^^^^^^^
+    7 | import { v4 as uuidv4 } from 'uuid';
+    8 | import { Cache } from 'cache-manager';
+    9 |
+
+ERROR in ./src/src/auth/auth.service.ts:8:23
+TS2307: Cannot find module 'cache-manager' or its corresponding type declarations.
+     6 | import { CACHE_MANAGER } from '@nestjs/cache-manager';
+     7 | import { v4 as uuidv4 } from 'uuid';
+  >  8 | import { Cache } from 'cache-manager';
+       |                       ^^^^^^^^^^^^^^^
+     9 |
+    10 | @Injectable()
+    11 | export class AuthService {
+
+ERROR in ./src/src/auth/strategy/google-oauth.strategy.ts:2:34
+TS2307: Cannot find module '@nestjs/passport' or its corresponding type declarations.
+    1 | import { Injectable } from "@nestjs/common";
+  > 2 | import { PassportStrategy } from "@nestjs/passport";
+      |                                  ^^^^^^^^^^^^^^^^^^
+    3 | import { Strategy } from "passport-google-oauth20";
+    4 | import { AuthService } from "../auth.service";
+    5 |
+
+ERROR in ./src/src/auth/strategy/google-oauth.strategy.ts:3:26
+TS2307: Cannot find module 'passport-google-oauth20' or its corresponding type declarations.
+    1 | import { Injectable } from "@nestjs/common";
+    2 | import { PassportStrategy } from "@nestjs/passport";
+  > 3 | import { Strategy } from "passport-google-oauth20";
+      |                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+    4 | import { AuthService } from "../auth.service";
+    5 |
+    6 | @Injectable()
+
+ERROR in ./src/src/auth/strategy/jwt.strategy.ts:2:38
+TS2307: Cannot find module 'passport-jwt' or its corresponding type declarations.
+    1 |
+  > 2 | import { ExtractJwt, Strategy } from 'passport-jwt';
+      |                                      ^^^^^^^^^^^^^^
+    3 | import { PassportStrategy } from '@nestjs/passport';
+    4 | import { Injectable } from '@nestjs/common';
+    5 | import { AuthService } from '../auth.service';
+
+ERROR in ./src/src/auth/strategy/jwt.strategy.ts:3:34
+TS2307: Cannot find module '@nestjs/passport' or its corresponding type declarations.
+    1 |
+    2 | import { ExtractJwt, Strategy } from 'passport-jwt';
+  > 3 | import { PassportStrategy } from '@nestjs/passport';
+      |                                  ^^^^^^^^^^^^^^^^^^
+    4 | import { Injectable } from '@nestjs/common';
+    5 | import { AuthService } from '../auth.service';
+    6 |
+
+ERROR in ./src/src/auth/strategy/local.strategy.ts:2:26
+TS2307: Cannot find module 'passport-local' or its corresponding type declarations.
+    1 |
+  > 2 | import { Strategy } from 'passport-local';
+      |                          ^^^^^^^^^^^^^^^^
+    3 | import { PassportStrategy } from '@nestjs/passport';
+    4 | import { Injectable, UnauthorizedException } from '@nestjs/common';
+    5 | import { AuthService } from '../auth.service';
+
+ERROR in ./src/src/auth/strategy/local.strategy.ts:3:34
+TS2307: Cannot find module '@nestjs/passport' or its corresponding type declarations.
+    1 |
+    2 | import { Strategy } from 'passport-local';
+  > 3 | import { PassportStrategy } from '@nestjs/passport';
+      |                                  ^^^^^^^^^^^^^^^^^^
+    4 | import { Injectable, UnauthorizedException } from '@nestjs/common';
+    5 | import { AuthService } from '../auth.service';
+    6 |
+
+ERROR in ./src/src/auth/user/user.service.ts:11:20
+TS2339: Property 'user' does not exist on type 'PrismaService'.
+     9 |
+    10 |   findUserByEmail(email: string) {
+  > 11 |     return this.db.user.findUnique({
+       |                    ^^^^
+    12 |       where: {
+    13 |         email
+    14 |       }
+
+ERROR in ./src/src/guard/jwt-auth.guard.ts:2:27
+TS2307: Cannot find module '@nestjs/passport' or its corresponding type declarations.
+    1 | import { Injectable } from '@nestjs/common';
+  > 2 | import { AuthGuard } from '@nestjs/passport';
+      |                           ^^^^^^^^^^^^^^^^^^
+    3 |
+    4 | @Injectable()
+    5 | export class JwtAuthGuard extends AuthGuard('jwt') { }
+
+ERROR in ./src/src/main.ts:3:26
+TS2307: Cannot find module 'cookie-parser' or its corresponding type declarations.
+    1 | import { NestFactory } from '@nestjs/core';
+    2 | import { AppModule } from './app.module';
+  > 3 | import cookieParser from 'cookie-parser';
+      |                          ^^^^^^^^^^^^^^^
+    4 | import { initSwagger } from './swagger';
+    5 | import { CorsConfig } from './cors';
+    6 | import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
+
+ERROR in ./src/src/main.ts:6:48
+TS2307: Cannot find module 'nestjs-pino' or its corresponding type declarations.
+    4 | import { initSwagger } from './swagger';
+    5 | import { CorsConfig } from './cors';
+  > 6 | import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
+      |                                                ^^^^^^^^^^^^^
+    7 | import { ValidationPipe, Logger as LoggerNest } from '@nestjs/common';
+    8 | import session from 'express-session';
+    9 |
+
+ERROR in ./src/src/main.ts:8:21
+TS2307: Cannot find module 'express-session' or its corresponding type declarations.
+     6 | import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
+     7 | import { ValidationPipe, Logger as LoggerNest } from '@nestjs/common';
+  >  8 | import session from 'express-session';
+       |                     ^^^^^^^^^^^^^^^^^
+     9 |
+    10 | async function bootstrap() {
+    11 |   const app = await NestFactory.create(AppModule, {
+
+ERROR in ./src/src/provider/prisma/prisma.service.ts:2:30
+TS2307: Cannot find module '@prisma/client' or its corresponding type declarations.
+    1 | import { Injectable, OnModuleInit } from '@nestjs/common';
+  > 2 | import { PrismaClient } from '@prisma/client';
+      |                              ^^^^^^^^^^^^^^^^
+    3 |
+    4 | @Injectable()
+    5 | export class PrismaService extends PrismaClient implements OnModuleInit {
+
+ERROR in ./src/src/provider/prisma/prisma.service.ts:7:16
+TS2339: Property '$connect' does not exist on type 'PrismaService'.
+     5 | export class PrismaService extends PrismaClient implements OnModuleInit {
+     6 |   async onModuleInit() {
+  >  7 |     await this.$connect();
+       |                ^^^^^^^^
+     8 |   }
+     9 | }
+    10 |
+
+ERROR in ./src/src/swagger.ts:2:48
+TS2307: Cannot find module '@nestjs/swagger' or its corresponding type declarations.
+    1 | import { INestApplication } from '@nestjs/common';
+  > 2 | import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+      |                                                ^^^^^^^^^^^^^^^^^
+    3 |
+    4 | export function initSwagger(app: INestApplication) {
+    5 |   const config = new DocumentBuilder()
+
+webpack compiled with 49 errors (2a70fd8465d7b724)
+
+
+
+ NX   Running target serve for project backend and 1 task it depends on failed
+
+Failed tasks:
+
+- backend:build
+
+Hint: run the command with --verbose for more details.
+

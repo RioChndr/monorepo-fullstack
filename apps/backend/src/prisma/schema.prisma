@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([id, email])
+}
+
+model funds {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  description     String?
+  stripeProductId String?  @map("stripe_product_id")
+  targetGoal      Int?     @map("target_goal")
+  targetMonthly   Int?     @map("target_monthly")
+  targetYearly    Int?     @map("target_yearly")
+  currentMonthly  Int?     @map("current_monthly")
+  currentYearly   Int?     @map("current_yearly")
+  currentGoal     Int?     @map("current_goal")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  FundsHistory   FundsHistory[]
+  FundsRecurring FundsRecurring[]
+}
+
+/// Store who is recurring funds
+model FundsRecurring {
+  id                   Int      @id @default(autoincrement())
+  fundId               String   @map("fund_id")
+  email                String?
+  name                 String?
+  stripeSubscriptionId String?  @unique @map("stripe_subscription_id")
+  stripeCustomerId     String?  @map("stripe_customer_id")
+  amount               Int
+  createdAt            DateTime @default(now())
+  funds                funds    @relation(fields: [fundId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+/// Funds history from callback stripe or manually entry
+model FundsHistory {
+  id               Int      @id @default(autoincrement())
+  fundId           String   @map("fund_id")
+  amount           Int
+  isOnetime        Boolean? @map("is_onetime")
+  isRecurring      Boolean? @map("is_recurring")
+  email            String?
+  name             String?
+  stripeChargeId   String?  @map("stripe_charge_id")
+  stripeCustomerId String?  @map("stripe_customer_id")
+  stripeEventId    String?  @map("stripe_event_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+  funds            funds    @relation(fields: [fundId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
